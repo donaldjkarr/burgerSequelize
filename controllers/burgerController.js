@@ -2,26 +2,29 @@ var express = require("express");
 
 var router = express.Router();
 
-// Import the model (cat.js) to use its database functions.
-var burger = require("../models/burger.js");
+// Import the model to use its database functions.
+// var burger = require("../models/burger.js");
+
+var db = require("../models/");
+
 
 // Create all our routes and set up logic within those routes where required.
 router.get("/", function(req, res) {
-  burger.all(function(data) {
-    var hbsObject = {
-      burgers: data
-    };
-    console.log(hbsObject);
-    res.render("index", hbsObject);
-  });
-});
+  db.burger.findAll({}).then(function(db) {
+        console.log(db);
+        var hbsObject = { burger: db };
+        return res.render("index", hbsObject);
+      });
+    });
+  
 
-router.post("/", function(req, res) {
-  burger.create([
-    "burger_name", "devoured"
-  ], [
-    req.body.name, req.body.devoured
-  ], function() {
+// post route to create burgers
+router.post("/burgers/create", function(req, res) {
+  // edited burger create to add in a burger_name
+  db.Burger.create({
+    burger_name: req.body.burger_name
+  }).then(function(db) {
+    console.log(db);
     res.redirect("/");
   });
 });
@@ -34,6 +37,21 @@ router.put("/:id", function(req, res) {
   burger.update({
     devoured: req.body.devoured
   }, condition, function() {
+    res.redirect("/");
+  });
+});
+
+router.put("/burgers/update", function(req, res) {
+  // update one of the burgers
+  db.Burger.update({
+    devoured: true
+  },
+    {
+      where: {
+        id: req.body.burger_id
+      }
+    }
+  ).then(function(dbBurger) {
     res.redirect("/");
   });
 });

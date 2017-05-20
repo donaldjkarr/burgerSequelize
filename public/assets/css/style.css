@@ -17,3 +17,12 @@ li {
 .form-group {
   margin-bottom: 5px;
 }
+
+#devoured {
+  width: 50%;
+}
+
+#notdevoured {
+  float: right;
+  width: 50%;
+}
